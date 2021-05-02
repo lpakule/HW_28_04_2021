@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+</head>
+<body>
+    <ul>
+        {% for every in users  %}
+        <li>
+            ID: {{every.id}}<br>
+            Name: <strong>{{ every.username }}</strong> <br>
+            Email: {{ every.email }} <br>
+        </li>
+        {% empty %}
+        <li>Sorry, no user in this list.
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
