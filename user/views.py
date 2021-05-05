@@ -1,89 +1,79 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, View, FormView, DetailView
 from django.core.exceptions import ValidationError
 
 from user.models import User
+from user.forms import AdduserForm
 
 
-def userlist(request):
-    users = User.objects.all()
+class Userlist(ListView):
+    model = User
+    template_name = 'userlist.html'
 
-    context = {'users': users,
-               'id': id}
+class Getuser(View):
+    def get(self, request, id):
+        try:
+            xxx = User.objects.get(id=id)
+            context = {'username': xxx.username,
+                       'email': xxx.email}
 
-    return render(
-        template_name='userlist.html',
-        request=request,
-        context=context
-    )
-def get_userid(request, id):
-    try:
-        xxx = User.objects.get(id=id)
-        context = {'username': xxx.username,
-                   'email': xxx.email}
+            return render(
+                template_name='added_user.html',
+                request=request,
+                context=context
+            )
+        except Exception as exception:
+            context = {'id': id}
+            return render(
+                template_name='id_does_not_exist.html',
+                request=request,
+                context=context
+            )
 
-        return render(
-            template_name='added_user.html',
-            request=request,
-            context=context
-        )
-    except Exception as exception:
-        context = {'id': id}
-        return render(
-            template_name='id_does_not_exist.html',
-            request=request,
-            context=context
-        )
+class Deleteuser(View):
+    def get(self, request, id):
+        try:
+            xxx = User.objects.get(id=id)
+            xxx.delete()
+            context = {'username': xxx.username,
+                       }
 
-def delete_userid(request, id):
-    try:
-        xxx = User.objects.get(id=id)
-        xxx.delete()
-        context = {'username': xxx.username,
-                   }
-
-        return render(
-            template_name='delete_userid.html',
-            request=request,
-            context=context
-        )
-    except Exception as exception:
-        context = {'id': id}
-        return render(
-            template_name='id_does_not_exist.html',
-            request=request,
-            context=context
-        )
-def add_user(request):
-    if request.method == 'POST':
-        user = User(
-        username=request.POST['username'],
-        email=request.POST['email'],
-        )
-
-        if len(user.username) == 0 or len(user.email) == 0:
-            raise ValidationError('''Please don't leave empty field''')
+            return render(
+                template_name='delete_userid.html',
+                request=request,
+                context=context
+            )
+        except Exception as exception:
+            context = {'id': id}
+            return render(
+                template_name='id_does_not_exist.html',
+                request=request,
+                context=context
+            )
 
 
-        user.save()
 
-        context = {'username': user.username,
-        'email': user.email}
 
-        return render(
-            template_name='added_user.html',
-            request=request,
-            context=context
-        )
+class Adduser(FormView):
+    form_class = AdduserForm
+    template_name = 'add_user.html'
+    success_url = reverse_lazy('user-list')
 
-    elif request.method == 'GET':
-        return render(
-            template_name='add_user.html',
-            request=request,
-            context={},
-        )
-def edit_userid(request, id):
-    try:
-        if request.method == 'POST':
+
+    def form_valid(self, form):
+        form.save()
+
+        response = super().form_valid(form)
+
+        return response
+
+
+
+class Edituser(View):
+    def post(self, request, id):
+
+
             user = User(
                 username=request.POST['username'],
                 email=request.POST['email'],
@@ -102,7 +92,8 @@ def edit_userid(request, id):
                 context=context
             )
 
-        elif request.method == 'GET':
+    def get(self, request, id):
+        try:
             user = User.objects.get(id=id)
 
             context = {'username': user.username,
@@ -113,10 +104,10 @@ def edit_userid(request, id):
                 request=request,
                 context=context,
             )
-    except Exception as exception:
-        context = {'id': id}
-        return render(
-            template_name='id_does_not_exist.html',
-            request=request,
-            context=context
-        )
+        except Exception as  exception:
+            context = {'id': id}
+            return render(
+                template_name='id_does_not_exist.html',
+                request=request,
+                context=context
+            )

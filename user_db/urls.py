@@ -20,9 +20,10 @@ import user.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', user.views.userlist),
-    path('add_user', user.views.add_user),
-    path('get_user/<int:id>', user.views.get_userid),
-    path('edit_user/<int:id>', user.views.edit_userid),
-    path('delete_user/<int:id>', user.views.delete_userid),
+    path('', user.views.Userlist.as_view(), name='user-list'),
+    path('add_user', user.views.Adduser.as_view(), name='adduser'),
+    path('get_user/<int:id>', user.views.Getuser.as_view(), name='getuser'),
+
+    path('edit_user/<int:id>', user.views.Edituser.as_view()),
+    path('delete_user/<int:id>', user.views.Deleteuser.as_view()),
 ]
