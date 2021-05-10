@@ -22,8 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', user.views.Userlist.as_view(), name='user-list'),
     path('add_user', user.views.Adduser.as_view(), name='adduser'),
-    path('get_user/<int:id>', user.views.Getuser.as_view(), name='getuser'),
-
+    path('get_user/<int:pk>', user.views.Getuser.as_view(), name='getuser'),
+    path('added_user/<int:pk>', user.views.Addeduser.as_view(), name='added-user'),
     path('edit_user/<int:id>', user.views.Edituser.as_view()),
-    path('delete_user/<int:id>', user.views.Deleteuser.as_view()),
+    path('delete_user/<int:id>', user.views.Deleteuser.as_view(), name='delete-user'),
 ]

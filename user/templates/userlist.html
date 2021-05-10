@@ -8,9 +8,11 @@
     <ul>
         {% for every in object_list  %}
         <li>
-            ID: {{every.id}}<br>
-            Name: <strong>{{ every.username }}</strong> <br>
-            Email: {{ every.email }} <br>
+            <a href="{% url 'delete-user' id=every.id %}">
+                ID: {{every.id}}<br>
+                Name: <strong>{{ every.username }}</strong> <br>
+                Email: {{ every.email }} <br>
+            </a>
         </li>
         {% empty %}
         <li>Sorry, no user in this list.
